@@ -12,7 +12,7 @@ OpenPNE3上で勤怠管理ができるようにする。
 /plugins/に設置
 
 ## 設定
-1. Google SpreadSheetを新規作成・Spreadsheetキーを取得する。
+1\. Google SpreadSheetを新規作成・Spreadsheetキーを取得する。
 
 【キーの取得方法】 
 
@@ -22,15 +22,16 @@ OpenPNE3上で勤怠管理ができるようにする。
 
 のXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXの部分をコピーしておく。
 
-2. 本プラグインに付属しているSheetSample.xlsをGoogle Spreadsheetにインポートする。
+2\. 本プラグインに付属しているSheetSample.xlsをGoogle Spreadsheetにインポートする。
 
-3. 続いてSpreadSheetのワークシートの名前を、各メンバーのPCメールアドレスの「@」より前に一致する名前に変更する。
+3\. 続いてSpreadSheetのワークシートの名前を、各メンバーのPCメールアドレスの「@」より前に一致する名前に変更する。
+
 ※追加でメンバーが必要な場合は、「Template」という名前のワークシートを必要な分だけコピー作成して、そのコピーしたものをそれぞれの対応する名前に変更してやってください。
 
-4. OpenPNE3の管理画面に入り、opGyoenKintaiPluginの設定画面にアクセスする。
+4\. OpenPNE3の管理画面に入り、opGyoenKintaiPluginの設定画面にアクセスする。
 アクセスしたら、そこに自分のGoogle ID、パスワード、(2. でコピーした)Spreadsheetキーを入力する。
 
-5. CRONの設定をする。これをすることにより、このプラグインが自動で各メンバーのワークシートに整形出力してくれる。
+5\. CRONの設定をする。これをすることにより、このプラグインが自動で各メンバーのワークシートに整形出力してくれる。
 
 生データをメンバーのワークシートに整形出力するコマンドは
 
