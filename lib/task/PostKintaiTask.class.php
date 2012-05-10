@@ -69,204 +69,190 @@ class PostKintaiTask extends sfBaseTask
           $year = $year - 1;
         }
         // 先月分の勤怠を処理する。
-        for ($i = 1; $i <= 31; $i++)
+        for ($i = 1; checkdate($previousMonth, $i, $year); $i++)
         {
-          if(checkdate($previousMonth, $i, $year))
+          $q = new Zend_Gdata_Spreadsheets_ListQuery();
+          $q->setSpreadsheetKey($memberspkey);
+          $q->setWorksheetId($memberWorkSheetId);
+          $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+          $q->setSpreadsheetQuery($query);
+          $lineList = $service->getListFeed($q);
+          if (!$lineList)
           {
-            $q = new Zend_Gdata_Spreadsheets_ListQuery();
-            $q->setSpreadsheetKey($memberspkey);
-            $q->setWorksheetId($memberWorkSheetId);
-            $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
-            $q->setSpreadsheetQuery($query);
-            $lineList = $service->getListFeed($q);
-            if (!$lineList)
-            {
-              continue;
-            }
-            else
-            {
-              foreach ($lineList->entries as $entry)
-              {
-                $lines = $entry->getCustom();
-                foreach($lines as $line)
-                {
-                  $key = $line->getColumnName();
-                  switch($key)
-                  {
-                    case 'date':
-                      $date = $line->getText();
-                      break;
-                    case 'ssh':
-                      $ssh = $line->getText();
-                      break;
-                    case 'ssm':
-                      $ssm = $line->getText();
-                      break;
-                    case 'seh':
-                      $seh = $line->getText();
-                      break;
-                    case 'sem':
-                      $sem = $line->getText();
-                      break;
-                    case 'srh':
-                      $srh = $line->getText();
-                      break;
-                    case 'srm':
-                      $srm = $line->getText();
-                      break;
-                    case 'zsh':
-                      $zsh = $line->getText();
-                      break;
-                    case 'zsm':
-                      $zsm = $line->getText();
-                      break;
-                    case 'zeh':
-                      $zeh = $line->getText();
-                      break;
-                    case 'zem':
-                      $zem = $line->getText();
-                      break;
-                    case 'zrh':
-                      $zrh = $line->getText();
-                      break;
-                    case 'zrm':
-                      $zrm = $line->getText();
-                      break;
-                    default:
-                      // 何もしない。                      
-                  }
-                }
-              }
-              $detail = array('date'=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
-              list($date, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null);
-              $r = new Zend_Gdata_Spreadsheets_ListQuery();
-              $r->setSpreadsheetKey($memberMasterSpkey);
-              $r->setWorksheetId($memberMasterWorkSheetId);
-              $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
-              $r->setSpreadsheetQuery($query);
-              $lineList = $service->getListFeed($r);
-              if ($lineList)
-              {
-                $update = $service->updateRow($lineList->entries['0'], $detail);
-                if ($update)
-                { 
-                  echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-                }
-                else
-                {
-                  echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-                }                 
-              }
-              else
-              {
-                echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-              }
-            }
+            continue;
           }
           else
           {
-            break;
+            foreach ($lineList->entries as $entry)
+            {
+              $lines = $entry->getCustom();
+              foreach($lines as $line)
+              {
+                $key = $line->getColumnName();
+                switch($key)
+                {
+                  case 'date':
+                    $date = $line->getText();
+                    break;
+                  case 'ssh':
+                    $ssh = $line->getText();
+                    break;
+                  case 'ssm':
+                    $ssm = $line->getText();
+                    break;
+                  case 'seh':
+                    $seh = $line->getText();
+                    break;
+                  case 'sem':
+                    $sem = $line->getText();
+                    break;
+                  case 'srh':
+                    $srh = $line->getText();
+                    break;
+                  case 'srm':
+                    $srm = $line->getText();
+                    break;
+                  case 'zsh':
+                    $zsh = $line->getText();
+                    break;
+                  case 'zsm':
+                    $zsm = $line->getText();
+                    break;
+                  case 'zeh':
+                    $zeh = $line->getText();
+                    break;
+                  case 'zem':
+                    $zem = $line->getText();
+                    break;
+                  case 'zrh':
+                    $zrh = $line->getText();
+                    break;
+                  case 'zrm':
+                    $zrm = $line->getText();
+                    break;
+                  default:
+                    // 何もしない。                      
+                }
+              }
+            }
+            $detail = array('date'=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
+            list($date, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null);
+            $r = new Zend_Gdata_Spreadsheets_ListQuery();
+            $r->setSpreadsheetKey($memberMasterSpkey);
+            $r->setWorksheetId($memberMasterWorkSheetId);
+            $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+            $r->setSpreadsheetQuery($query);
+            $lineList = $service->getListFeed($r);
+            if ($lineList)
+            {
+              $update = $service->updateRow($lineList->entries['0'], $detail);
+              if ($update)
+              { 
+                echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
+              }
+              else
+              {
+                echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
+              }                 
+            }
+            else
+            {
+              echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
+            }
           }
         }
 
         // 今月分の勤怠を処理する。
-        for ($i = 1; $i < $today; $i++)
+        for ($i = 1; $i < $today && checkdate(date('m'), $i, date('Y')); $i++)
         {
-          if (checkdate(date('m'), $i, date('Y')))
+          $s = new Zend_Gdata_Spreadsheets_ListQuery();
+          $s->setSpreadsheetKey($memberspkey);
+          $s->setWorksheetId($memberWorkSheetId);
+          $query = 'date='.date('Y').'/'.date('m').'/'.$i;
+          $s->setSpreadsheetQuery($query);
+          $lineList = $service->getListFeed($s);
+          if (!$lineList)
           {
-            $s = new Zend_Gdata_Spreadsheets_ListQuery();
-            $s->setSpreadsheetKey($memberspkey);
-            $s->setWorksheetId($memberWorkSheetId);
-            $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-            $s->setSpreadsheetQuery($query);
-            $lineList = $service->getListFeed($s);
-            if (!$lineList)
-            {
-              continue;
-            }
-            else
-            {
-              foreach($lineList->entries as $entry)
-              {
-                $lines = $entry->getCustom();
-                foreach($lines as $line)
-                {
-                  $key = $line->getColumnName();
-                  switch($key)
-                  {
-                    case 'date':
-                      $date = $line->getText();
-                      break;
-                    case 'ssh':
-                      $ssh = $line->getText();
-                      break;
-                    case 'ssm':
-                      $ssm = $line->getText();
-                      break;
-                    case 'seh':
-                      $seh = $line->getText();
-                      break;
-                    case 'sem':
-                      $sem = $line->getText();
-                      break;
-                    case 'srh':
-                      $srh = $line->getText();
-                      break;
-                    case 'srm':
-                      $srm = $line->getText();
-                      break;
-                    case 'zsh':
-                      $zsh = $line->getText();
-                      break;
-                    case 'zsm':
-                      $zsm = $line->getText();
-                      break;
-                    case 'zeh':
-                      $zeh = $line->getText();
-                      break;
-                    case 'zem':
-                      $zem = $line->getText();
-                      break;
-                    case 'zrh':
-                      $zrh = $line->getText();
-                      break;
-                    case 'zrm':
-                      $zrm = $line->getText();
-                      break;
-                    default:
-                      // 何もしない。                      
-                  }
-                }
-              }
-              $detail = array('date'=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
-              list($date, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null);
-              $t = new Zend_Gdata_Spreadsheets_ListQuery();
-              $t->setSpreadsheetKey($memberMasterSpkey);
-              $t->setWorksheetId($memberMasterWorkSheetId);
-              $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-              $t->setSpreadsheetQuery($query);
-              $lineList2 = $service->getListFeed($t);
-              if ($lineList2)
-              {
-                $update = $service->updateRow($lineList2->entries['0'], $detail);
-                if ($update)
-                { 
-                  echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-                }
-                else
-                {
-                  echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-                }
-              }
-              else
-              {
-                echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-              }
-            }
+            continue;
           }
           else
           {
-            break;
+            foreach($lineList->entries as $entry)
+            {
+              $lines = $entry->getCustom();
+              foreach($lines as $line)
+              {
+                $key = $line->getColumnName();
+                switch($key)
+                {
+                  case 'date':
+                    $date = $line->getText();
+                    break;
+                  case 'ssh':
+                    $ssh = $line->getText();
+                    break;
+                  case 'ssm':
+                    $ssm = $line->getText();
+                    break;
+                  case 'seh':
+                    $seh = $line->getText();
+                    break;
+                  case 'sem':
+                    $sem = $line->getText();
+                    break;
+                  case 'srh':
+                    $srh = $line->getText();
+                    break;
+                  case 'srm':
+                    $srm = $line->getText();
+                    break;
+                  case 'zsh':
+                    $zsh = $line->getText();
+                    break;
+                  case 'zsm':
+                    $zsm = $line->getText();
+                    break;
+                  case 'zeh':
+                    $zeh = $line->getText();
+                    break;
+                  case 'zem':
+                    $zem = $line->getText();
+                    break;
+                  case 'zrh':
+                    $zrh = $line->getText();
+                    break;
+                  case 'zrm':
+                    $zrm = $line->getText();
+                    break;
+                  default:
+                    // 何もしない。                      
+                }
+              }
+            }
+            $detail = array('date'=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
+            list($date, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null);
+            $t = new Zend_Gdata_Spreadsheets_ListQuery();
+            $t->setSpreadsheetKey($memberMasterSpkey);
+            $t->setWorksheetId($memberMasterWorkSheetId);
+            $query = 'date='.date('Y').'/'.date('m').'/'.$i;
+            $t->setSpreadsheetQuery($query);
+            $lineList2 = $service->getListFeed($t);
+            if ($lineList2)
+            {
+              $update = $service->updateRow($lineList2->entries['0'], $detail);
+              if ($update)
+              { 
+                echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
+              }
+              else
+              {
+                echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
+              }
+            }
+            else
+            {
+              echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
+            }
           }
         }
       }
