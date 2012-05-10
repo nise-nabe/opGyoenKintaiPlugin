@@ -26,7 +26,14 @@ class kintaiActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
     //definition
-    $service = self::getZendGdata();
+    try{
+      $service = self::getZendGdata();
+    }
+    catch(Exception $e)
+    {
+      return sfView::ERROR;
+      exit;
+    }
     $id = $this->getRequestParameter('id');
     $memberId = isset($id) ? $id : $this->getUser()->getMemberId();
     $memberS = Doctrine::getTable('Member')->find($memberId);
