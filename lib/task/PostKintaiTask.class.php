@@ -36,13 +36,15 @@ class PostKintaiTask extends sfBaseTask
     $members = $dql->execute();
     $rawKey = opConfig::get('op_kintai_spkey', null);
     $wid = self::getRowId($service, $rawKey);
-    foreach($members as $member){
+    foreach($members as $member)
+    {
       //変数初期化
       list($memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId) = array(null, null, null, null, null,);
       $memberId = $member->getId();
       $memberspkey = self::getMemberSpreadSheetKey($service, $memberId);
       
-      if (!is_null($memberspkey)){
+      if (!is_null($memberspkey))
+      {
         $memberWorkSheetId = self::getMemberWorkSheetId($service, $memberspkey);
       }
       $memberMasterSpkey = self::getMemberMasterSpreadSheetKey($service, $memberId); 
