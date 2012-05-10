@@ -22,7 +22,7 @@ class PostKintaiTask extends sfBaseTask
     $details = array();
     $databaseManager = new sfDatabaseManager($this->configuration);
     //$connection = Doctrine_Manager::connection();
-    $service = self::getZendGdata();
+    $service = $this->getZendGdata();
     $p = array();
     $dql = Doctrine_Query::create()->from("Member m")->where("m.is_active = ?","1");
     if (!is_null($options['start-member-id']) && is_numeric($options['start-member-id']))
@@ -35,7 +35,7 @@ class PostKintaiTask extends sfBaseTask
     }
     $members = $dql->execute();
     $rawKey = opConfig::get('op_kintai_spkey', null);
-    $wid = self::getRowId($service, $rawKey);
+    $wid = $this->getRowId($service, $rawKey);
     foreach($members as $member)
     {
       //変数初期化
@@ -45,12 +45,12 @@ class PostKintaiTask extends sfBaseTask
       
       if (!is_null($memberspkey))
       {
-        $memberWorkSheetId = self::getMemberWorkSheetId($service, $memberspkey);
+        $memberWorkSheetId = $this->getMemberWorkSheetId($service, $memberspkey);
       }
-      $memberMasterSpkey = self::getMemberMasterSpreadSheetKey($service, $memberId); 
+      $memberMasterSpkey = $this->getMemberMasterSpreadSheetKey($service, $memberId); 
       if (!is_null($memberMasterSpkey))
       {
-        $memberMasterWorkSheetId = self::getMemberMasterWorkSheetId($service, $memberMasterSpkey);
+        $memberMasterWorkSheetId = $this->getMemberMasterWorkSheetId($service, $memberMasterSpkey);
       }
       echo "==== debug info =====\n";
       echo "Member Id : {$memberId}\n";
@@ -690,7 +690,7 @@ class PostKintaiTask extends sfBaseTask
     }
   }
 
-  public static function getZendGdata()
+  public function getZendGdata()
   {
     $id = Doctrine::getTable('SnsConfig')->get('op_kintai_spid');
     $pw = Doctrine::getTable('SnsConfig')->get('op_kintai_sppw');
