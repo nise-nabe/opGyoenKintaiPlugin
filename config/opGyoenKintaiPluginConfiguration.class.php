@@ -19,7 +19,7 @@ class opGyoenKintaiPluginConfiguration extends sfPluginConfiguration
 {
   public function initialize()
   {
-    sfToolkit::addIncludePath(OPENPNE3_CONFIG_DIR.'/../lib/vendor');
+    sfToolkit::addIncludePath(dirname(__FILE__).'/../lib/vendor');
   }
 }
 
