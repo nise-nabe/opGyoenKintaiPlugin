@@ -6,7 +6,7 @@ foreach ($members as $member)
 {
   $id = $member->getId();
   $name = $member->getName();
-  echo '<tr><td>'.$id.'</td><td>'.$name.'</td><td><a href="./edit?member_id='.$id.'>Edit</a></td></tr>';
+  echo '<tr><td>'.$id.'</td><td>'.$name.'</td><td><a href="./edit?member_id='.$id.'">Edit</a></td></tr>';
 }
 ?>
 </table>
