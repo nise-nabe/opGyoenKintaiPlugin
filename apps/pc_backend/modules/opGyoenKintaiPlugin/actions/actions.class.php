@@ -67,70 +67,47 @@ class opGyoenKintaiPluginActions extends sfActions
     }
   }
 
-  public function executeEdit(sfWebRequest $request)
+  public function executeEdit(opWebRequest $request)
   {
     $this->form = new sfForm();
+    $memberId = $request->getParameter('member_id');
     if ($request->isMethod(sfWebRequest::POST))
     {
-      $memberId = $request->getParameter('member_id');
       $wid = $request->getParameter('wid');
       if (!$memberId || !$wid)
       {
         return sfView::ERROR;
       }
-      else
-      {
-        $member = Doctrine::getTable('Member')->find($memberId, null);
-        if (is_null($member))
-        {
-          return sfView::ERROR;
-        }
-        else
-        {
-          $config = Doctrine::getTable('MemberConfig')->retrieveByNameAndMemberId('op_kintai_member_wid', $memberId);
-          if (!$config)
-          {
-            $config = new MemberConfig();
-            $config->setName('op_kintai_member_wid');
-            $config->setMember($member);
-          }
-          $config->setValue($wid);
-          $config->save();
-          $this->message = "登録しました。";
-          $this->member = $member;
-          $this->value = $wid;
-
-          return sfView::SUCCESS;
-        }
-      }
-    }
-    else
-    {
-      $memberId = $request->getParameter('member_id');
-
-      if (is_null($memberId))
-      {
-         $this->redirect('opGyoenKintaiPlugin/list');
-         exit;
-      }
       $member = Doctrine::getTable('Member')->find($memberId, null);
       if (is_null($member))
       {
-         $this->redirect('opGyoenKintaiPlugin/list');
-         exit;
+        return sfView::ERROR;
       }
+      $config = Doctrine::getTable('MemberConfig')->retrieveByNameAndMemberId('op_kintai_member_wid', $memberId);
+      if (!$config)
+      {
+        $config = new MemberConfig();
+        $config->setName('op_kintai_member_wid');
+        $config->setMember($member);
+      }
+      $config->setValue($wid);
+      $config->save();
+      $this->message = "登録しました。";
+      $this->member = $member;
+      $this->value = $wid;
+    }
+    else
+    {
+      $this->redirectIf(is_null($memberId), 'opGyoenKintaiPlugin/list');
+
+      $member = Doctrine::getTable('Member')->find($memberId, null);
+      $this->redirectIf(is_null($member), 'opGyoenKintaiPlugin/list');
+
       $this->member = $member;
       $config = Doctrine::getTable('MemberConfig')->retrieveByNameAndMemberId('op_kintai_member_wid', $memberId);
-      if ($config)
-      {
-        $this->value= $config->getValue();
-      }
-      else
-      {
-        $this->value = '';
-      }
-
-      return sfView::SUCCESS;
+      $this->value= $config ? $config->getValue() : '';
     }
+
+    return sfView::SUCCESS;
   }
 }
