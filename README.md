@@ -1,18 +1,23 @@
-■opGyoenKintaiPlugin概要
+opGyoenKintaiPlugin
+===================
+
+# 概要
 OpenPNE3上で勤怠管理ができるようにする。
 勤怠はGoogle SpreadSheet上にて管理する。
 メンバーは自分の勤怠を入力して、過去３日に遡り新規登録・編集ができる。それ以上たってしまった場合は、Spreadsheetで直接編集してください。
 またメンバーは、他のメンバーの勤怠状況を見ることができる。
 自分の勤怠は月毎にCSVでダウンロードすることができる。
 
-■インストール
+# インストール
 /plugins/に設置
 
-◆設定
+# 設定
 1. Google SpreadSheetを新規作成・Spreadsheetキーを取得する。
 　【キーの取得方法】 
 　　該当のSpreadsheetのURLにある、
-　　https://docs.google.com/a/example.com/spreadsheet/ccc?key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&hl=ja#gid=1 の
+
+    https://docs.google.com/a/example.com/spreadsheet/ccc?key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&hl=ja#gid=1 の
+
 　　XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXの部分をコピーしておく。
 
 2. 本プラグインに付属しているSheetSample.xlsをGoogle Spreadsheetにインポートする。
@@ -26,22 +31,27 @@ OpenPNE3上で勤怠管理ができるようにする。
 5. CRONの設定をする。これをすることにより、このプラグインが自動で各メンバーのワークシートに整形出力してくれる。
 
 生データをメンバーのワークシートに整形出力するコマンドは
-./symfony opKintai:execute
+
+    ./symfony opKintai:execute
 
 メンバーIDの範囲を指定してタスクを実行することもできます。
-./symfony opKintai:execute --start-member-id=1 --end-member-id=10
+ 
+    ./symfony opKintai:execute --start-member-id=1 --end-member-id=10
+
 とすると、メンバーID１〜１０の間でスキャンが実行されます。
 ※start-member-idを実行しない場合は１、end-member-idを指定しない場合はSNSメンバーの最大IDまでの範囲で実行されます。
 
 勤怠報告をアクティビティに投稿して促すコマンドは
 (朝)
-./symfony opKintai:notify morning
+
+    ./symfony opKintai:notify morning
 
 (夕)
-./symfony opKintai:notify evening
+
+    ./symfony opKintai:notify evening
 
 とそれぞれ実行する。
 
 
-◆TODO
+#TODO
 Issuesで管理する。
