@@ -16,8 +16,5 @@ class kintaiComponents extends sfComponents
     $this->getResponse()->addJavascript('/opGyoenKintaiPlugin/js/jquery.prettyPopin.js', 'first');
     $this->getResponse()->addJavascript('/opGyoenKintaiPlugin/js/jquery.kintai.js');
     $this->memberName = $this->getUser()->getMember()->getName();
-
   }
 }
-
-

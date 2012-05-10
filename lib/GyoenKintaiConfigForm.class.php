@@ -1,4 +1,5 @@
 <?php
+
 class GyoenKintaiConfigForm extends sfForm
 {
   protected $configs = array(
@@ -40,7 +41,6 @@ class GyoenKintaiConfigForm extends sfForm
     $this->getWidgetSchema()->setNameFormat('kintai_config[%s]');
   }
 
-
   public function save()
   {
     foreach ($this->getValues() as $k => $v)
@@ -61,4 +61,3 @@ class GyoenKintaiConfigForm extends sfForm
     }
   }
 }
-

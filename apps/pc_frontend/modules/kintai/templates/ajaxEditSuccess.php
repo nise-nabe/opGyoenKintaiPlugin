@@ -39,4 +39,4 @@ $(function(){
 <tr><td></td><td><input type="submit" name="submit" id="kintai_submit" value="修正する" /></td></tr>
 
 </table>
-</div>	
+</div>

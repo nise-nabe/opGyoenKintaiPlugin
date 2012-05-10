@@ -56,11 +56,11 @@ class opKintaiPostTask extends sfBaseTask
       {
         $memberMasterWorkSheetId = self::getMemberMasterWorkSheetId($service, $memberMasterSpkey);
       }
-      echo '==== debug info =====\n';
-      echo 'Member Id : ' . $memberId . '\n';
-      echo 'rawkey: ' . $rawKey . ' || rowid: ' . $wid . '\n';
-      echo 'Key: ' . $memberspkey . ' || WorkSheetId: ' . $memberWorkSheetId . '\n';
-      echo 'MasterSpkey: ' . $memberMasterSpkey . ' || MasterWorkSheetId: ' . $memberMasterWorkSheetId . '\n';
+      echo "==== debug info =====\n";
+      echo 'Member Id : '.$memberId."\n";
+      echo 'rawkey: '.$rawKey.' || rowid: '.$wid."\n";
+      echo 'Key: '.$memberspkey.' || WorkSheetId: '.$memberWorkSheetId."\n";
+      echo 'MasterSpkey: '.$memberMasterSpkey.' || MasterWorkSheetId: '.$memberMasterWorkSheetId."\n";
       // スプレッドシートで勤怠報告しているメンバーの勤怠を処理する。
       if (!is_null($memberspkey) && !is_null($memberWorkSheetId))
       {
@@ -73,7 +73,7 @@ class opKintaiPostTask extends sfBaseTask
           $year = $year - 1;
         }
         // 先月分の勤怠を処理する。
-        for ($i=1;$i<31;$i++)
+        for ($i = 1; $i < 31; $i++)
         {
           if (checkdate($previousMonth, $i, $year))
           {
@@ -188,7 +188,7 @@ class opKintaiPostTask extends sfBaseTask
         }
 
         // 今月分の勤怠を処理する。
-        for ($i=1;$i<$today;$i++)
+        for ($i = 1;$i < $today; $i++)
         {
           if (checkdate(date('m'), $i, date('Y')))
           {
@@ -207,9 +207,11 @@ class opKintaiPostTask extends sfBaseTask
               foreach ($lineList->entries as $entry)
               {
                 $lines = $entry->getCustom();
-                foreach($lines as $line){
+                foreach($lines as $line)
+                {
                   $key = $line->getColumnName();
-                  switch($key){
+                  switch($key)
+                  {
                     case 'date':
                       $date = $line->getText();
                       break;
@@ -305,7 +307,7 @@ class opKintaiPostTask extends sfBaseTask
         $previousMonth = date('m') - 1;
         $year = date('Y');
         $today = date('d');
-        if (strlen($previousMonth)==1)
+        if (1 == strlen($previousMonth))
         {
           $previousMonth = '0'.$previousMonth;
         }
@@ -317,12 +319,12 @@ class opKintaiPostTask extends sfBaseTask
         }
 
         // 先月分の勤怠を処理する。
-        for ($i=1;$i<31;$i++) 
+        for ($i = 1 ;$i < 31 ; $i++) 
         {
           if (checkdate($previousMonth, $i, $year))
           {
             $j = $i;
-            if (strlen($j)==1)
+            if (1 == strlen($j))
             {
               $j = '0'.$j;
             }
@@ -335,8 +337,8 @@ class opKintaiPostTask extends sfBaseTask
             $lineList = $service->getListFeed($u);
             if (!$lineList->entries['0'])
             {
-              echo 'skip\n';
-	      continue;
+              echo "skip\n";
+              continue;
             }
             else
             {
@@ -363,10 +365,10 @@ class opKintaiPostTask extends sfBaseTask
                 }
               }
 
-              if (strlen($data)==12)
+              if (12 == strlen($data))
               {
                 $keitai = substr($data, 0, 1);
-                if ($keitai=='S')
+                if ('S' == $keitai)
                 {
                   $ssh = substr($data, 1, 2);
                   $ssm = substr($data, 3, 2);
@@ -375,11 +377,11 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $srm = '0';
                   }
@@ -393,22 +395,22 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0)
+                  if (0 == $zrh)
                   {
                     $zrh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $zrm = '0';
                   }
                 }
               }
-              elseif (strlen($data)==24)
+              elseif (24 == strlen($data))
               {
                 $data1 = substr($data, 0, 12);
                 $data2 = substr($data, 12, 12);
                 $keitai1 = substr($data1, 0, 1);
-                if ($keitai1=='S')
+                if ('S' == $keitai1)
                 {
                   $ssh = substr($data1, 1, 2);
                   $ssm = substr($data1, 3, 2);
@@ -417,11 +419,12 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data1, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($srm==0){
+                  if (0 == $srm)
+                  {
                     $srm = '0';
                   }
                 }
@@ -434,17 +437,17 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data1, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0)
+                  if (0 == $zrh)
                   {
                     $zrh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $zrm = '0';
                   }
                 }
 
-                if ($keitai2=='S')
+                if ('S' == $keitai2)
                 {
                   $ssh = substr($data2, 1, 2);
                   $ssm = substr($data2, 3, 2);
@@ -453,15 +456,17 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data2, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $srm = '0';
                   }
-                }else{
+                }
+                else
+                {
                   $zsh = substr($data2, 1, 2);
                   $zsm = substr($data2, 3, 2);
                   $zeh = substr($data2, 5, 2);
@@ -469,11 +474,11 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data2, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0)
+                  if (0 == $zrh)
                   {
                     $zrh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $zrm = '0';
                   }
@@ -530,12 +535,12 @@ class opKintaiPostTask extends sfBaseTask
 
         // 今月の勤怠の処理をする。
         $today = date('d');
-        for ($i=1;$i<$today;$i++)
+        for ($i = 1; $i < $today; $i++)
         {
           if (checkdate(date('m'), $i, date('Y')))
           {
             $j = $i;
-            if (strlen($j)==1)
+            if (1 == strlen($j))
             {
               $j = '0'.$j;
             }
@@ -549,7 +554,7 @@ class opKintaiPostTask extends sfBaseTask
             $lineList = $service->getListFeed($w);
             if (!$lineList->entries['0'])
             {
-              echo 'skip\n';
+              echo "skip\n";
               continue;
             }
             else
@@ -577,10 +582,10 @@ class opKintaiPostTask extends sfBaseTask
                 }
               }
 
-              if (strlen($data)==12)
+              if (12 == strlen($data))
               {
                 $keitai = substr($data, 0, 1);
-                if ($keitai=='S')
+                if ('S' == $keitai)
                 {
                   $ssh = substr($data, 1, 2);
                   $ssm = substr($data, 3, 2);
@@ -589,11 +594,11 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($srm==0)
+                  if (0 == $srm)
                   {
                     $srm = '0';
                   }
@@ -607,21 +612,23 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0)
+                  if (0 == $zrh)
                   {
                     $zrh = '0';
                   }
-                  if ($zrm==0){
+                  if (0 == $zrm)
+                  {
                     $zrm = '0';
                   }
                 }
               }
-              elseif (strlen($data)==24)
+              elseif (24 == strlen($data))
               {
                 $data1 = substr($data, 0, 12);
                 $data2 = substr($data, 12, 12);
                 $keitai1 = substr($data1, 0, 1);
-                if ($keitai1=='S'){
+                if ('S' == $keitai1)
+                {
                   $ssh = substr($data1, 1, 2);
                   $ssm = substr($data1, 3, 2);
                   $seh = substr($data1, 5, 2);
@@ -629,11 +636,11 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data1, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($srm==0)
+                  if (0 == $srm)
                   {
                     $srm = '0';
                   }
@@ -647,16 +654,16 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data1, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0) 
+                  if (0 == $zrh) 
                   {
                     $zrh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $zrm = '0';
                   }
                 }
-                if($keitai2=='S')
+                if ('S' == $keitai2)
                 {
                   $ssh = substr($data2, 1, 2);
                   $ssm = substr($data2, 3, 2);
@@ -665,12 +672,13 @@ class opKintaiPostTask extends sfBaseTask
                   $srest = substr($data2, 9, 3);
                   $srh = floor($srest / 60);
                   $srm = $srest - ( $srh * 60 );
-                  if ($srh==0)
+                  if (0 == $srh)
                   {
                     $srh = '0';
                   }
-                  if ($srm==0){
-                  $srm = '0';
+                  if (0 == $srm)
+                  {
+                    $srm = '0';
                   }
                 }
                 else
@@ -682,11 +690,11 @@ class opKintaiPostTask extends sfBaseTask
                   $zrest = substr($data2, 9, 3);
                   $zrh = floor($zrest / 60);
                   $zrm = $zrest - ( $zrh * 60 );
-                  if ($zrh==0)
+                  if (0 == $zrh)
                   {
                      $zrh = '0';
                   }
-                  if ($zrm==0)
+                  if (0 == $zrm)
                   {
                     $zrm = '0';
                   }
@@ -749,7 +757,7 @@ class opKintaiPostTask extends sfBaseTask
     $i = 0;
     foreach ($feed->entries as $entry)
     {
-      if ($entry->title->text===$spreadsheetname)
+      if ($entry->title->text === $spreadsheetname)
       {
         $aKey = split('/', $feed->entries[$i]->id->text);
         $spreadsheetKey = $aKey[5];
@@ -759,12 +767,10 @@ class opKintaiPostTask extends sfBaseTask
     }
     if ($spreadsheetKey)
     {
-
       return $spreadsheetKey;
     }
     else
     {
-
       return null;
     }
   }
@@ -779,7 +785,7 @@ class opKintaiPostTask extends sfBaseTask
     foreach ($spreadsheetFeed->entries as $worksheetEntry) 
     {
       $worksheetId = split('/', $spreadsheetFeed->entries[$i]->id->text);
-      if ($worksheetEntry->title->text===$worksheetname)
+      if ($worksheetEntry->title->text === $worksheetname)
       {
          $worksheetId = $worksheetId[8];
          break;
@@ -799,7 +805,7 @@ class opKintaiPostTask extends sfBaseTask
     $i = 0;
     foreach ($feed->entries as $entry)
     {
-      if ($entry->title->text===$spreadsheetname)
+      if ($entry->title->text === $spreadsheetname)
       {
         $aKey = split('/', $feed->entries[$i]->id->text);
         $SpreadsheetKey = $aKey[5];
@@ -809,12 +815,10 @@ class opKintaiPostTask extends sfBaseTask
     }
     if ($spreadsheetKey)
     {
-
       return $spreadsheetKey;
     }
     else
     {
-
       return null;
     }
   } 
@@ -850,7 +854,7 @@ class opKintaiPostTask extends sfBaseTask
     foreach ($spreadsheetFeed->entries as $worksheetEntry)
     {
       $worksheetId = split('/', $spreadsheetFeed->entries[$i]->id->text);
-      if ($worksheetEntry->title->text===$worksheetname)
+      if ($worksheetEntry->title->text === $worksheetname)
       {
          $worksheetId = $worksheetId[8];
          break;

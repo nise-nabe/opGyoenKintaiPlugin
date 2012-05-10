@@ -2,7 +2,7 @@
 
 <span style="color: #F00;"><?php echo $message; ?></span><br />
 <?php $id = $member->getId(); ?>
-<?php echo $form->renderFormTag("edit?member_id={$id}"); ?>
+<?php echo $form->renderFormTag('edit?member_id='.$id); ?>
 <table width= 50%>
 <tr><td width=25%>メンバーID</td><td width="75%"><?php echo $member->getId(); ?></td></tr>
 <tr><td width="25%">ニックネーム</td><td width="75%"><?php echo $member->getName(); ?></td></tr>
