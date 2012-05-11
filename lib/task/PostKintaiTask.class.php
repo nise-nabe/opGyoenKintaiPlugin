@@ -21,7 +21,6 @@ class PostKintaiTask extends sfBaseTask
     echo "START KINTAI BOT.\n";
     $details = array();
     $databaseManager = new sfDatabaseManager($this->configuration);
-    //$connection = Doctrine_Manager::connection();
     $service = $this->getZendGdata();
     $p = array();
     $dql = Doctrine_Query::create()->from("Member m")->where("m.is_active = ?","1");
