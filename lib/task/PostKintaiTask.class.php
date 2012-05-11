@@ -60,14 +60,9 @@ class PostKintaiTask extends sfBaseTask
       // スプレッドシートで勤怠報告しているメンバーの勤怠を処理する。
       if (!is_null($memberspkey) && !is_null($memberWorkSheetId))
       {
-        $previousMonth = date('m') - 1;
-        $year = date('Y');
-        $today = date('d');
-        if (!checkdate($previousMonth, 1, $year))
-        {
-          $previousMonth = 12;
-          $year = $year - 1;
-        }
+        $previousMonth = date('m', strtotime('-1 month'));
+        $year = date('Y', strtotime('-1 month'));
+        $today = date('d', strtotime('-1 month'));
         // 先月分の勤怠を処理する。
         for ($i = 1; checkdate($previousMonth, $i, $year); $i++)
         {
@@ -157,20 +152,13 @@ class PostKintaiTask extends sfBaseTask
       }
       elseif (!is_null($memberMasterSpkey) && !is_null($memberMasterWorkSheetId))
       {
-        $previousMonth = date('m') - 1;
-        $year = date('Y');
-        $today = date('d');
+        $previousMonth = date('m', strtotime('-1 month'));
+        $year = date('Y', strtotime('-1 month'));
+        $today = date('d', strtotime('-1 month'));
         if(1 == strlen($previousMonth))
         {
           $previousMonth = "0".$previousMonth;
         }
-
-        if (!checkdate($previousMonth, 1, $year))
-        {
-          $previousMonth = 12;
-          $year = $year - 1;
-        }
-
         // 先月分の勤怠を処理する。
         for ($i = 1; $i <= 31;$i++)
         {
