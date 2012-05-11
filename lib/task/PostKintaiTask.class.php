@@ -152,13 +152,9 @@ class PostKintaiTask extends sfBaseTask
       }
       elseif (!is_null($memberMasterSpkey) && !is_null($memberMasterWorkSheetId))
       {
-        $previousMonth = date('m', strtotime('-1 month'));
+        $previousMonth = sprintf('%02d', date('m', strtotime('-1 month')));
         $year = date('Y', strtotime('-1 month'));
         $today = date('d', strtotime('-1 month'));
-        if(1 == strlen($previousMonth))
-        {
-          $previousMonth = "0".$previousMonth;
-        }
         // 先月分の勤怠を処理する。
         for ($i = 1; $i <= 31;$i++)
         {
