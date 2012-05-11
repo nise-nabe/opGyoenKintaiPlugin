@@ -164,11 +164,7 @@ class PostKintaiTask extends sfBaseTask
         {
           if (checkdate($previousMonth, $i, $year))
           {
-            $j = $i;
-            if (1 == strlen($j))
-            {
-              $j = '0'.$j;
-            }
+            $j = sprintf('%02d', $i);
             echo "Scanning: ".$year."/".$previousMonth."/".$j."...";
             $u = new Zend_Gdata_Spreadsheets_ListQuery();
             $u->setSpreadsheetKey($rawKey);
