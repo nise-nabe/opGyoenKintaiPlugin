@@ -237,28 +237,7 @@ class PostKintaiTask extends sfBaseTask
 
           $detail = array("date"=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
           list($date, $data, $data1, $data2, $keitai, $keitai1, $keitai2, $comment, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-          $v = new Zend_Gdata_Spreadsheets_ListQuery();
-          $v->setSpreadsheetKey($memberMasterSpkey);
-          $v->setWorksheetId($memberMasterWorkSheetId);
-          $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
-          $v->setSpreadsheetQuery($query);
-          $lineList = $service->getListFeed($v);
-          if ($lineList)
-          {
-            $update = $service->updateRow($lineList->entries['0'], $detail);
-            if ($update)
-            {
-              echo sprintf("UPDATE SUCCESS!(OP3-previous-month) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-            }
-            else
-            {
-              echo sprintf("ERROR! NO UPDATED.(OP3) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-            }
-          }
-          else
-          {
-            echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-          }
+          $this->updateMasterKintai($service, $memberId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $previousMonth, $i, $detail);
           $date = "";
           $detail = array();
         }
@@ -424,29 +403,8 @@ class PostKintaiTask extends sfBaseTask
           $detail = array("date"=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
           // 変数を一括初期化。
           list($date, $data, $data1, $data2, $keitai, $keitai1, $keitai2, $comment, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+          $this->updateMasterKintai($service, $memberId, $memberMasterSpkey, $memberMasterWorkSheetId, date('Y'), date('m'), $i, $detail);
 
-          $x = new Zend_Gdata_Spreadsheets_ListQuery();
-          $x->setSpreadsheetKey($memberMasterSpkey);
-          $x->setWorksheetId($memberMasterWorkSheetId);
-          $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-          $x->setSpreadsheetQuery($query);
-          $lineList = $service->getListFeed($x);
-          if ($lineList)
-          {
-            $update = $service->updateRow($lineList->entries['0'], $detail);
-            if ($update)
-            {
-              echo sprintf("UPDATE SUCCESS! (OP3) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-            }
-            else
-            {
-              echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-            }
-          }
-          else
-          {
-            echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-          }
         }
       }
     }
