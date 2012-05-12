@@ -57,7 +57,7 @@ class PostKintaiTask extends sfBaseTask
       echo "Key: {$memberspkey} || WorkSheetId: {$memberWorkSheetId}\n";
       echo "MasterSpkey: {$memberMasterSpkey} || MasterWorkSheetId: {$memberMasterWorkSheetId}\n";
       // スプレッドシートで勤怠報告しているメンバーの勤怠を処理する。
-      if (false && !is_null($memberspkey) && !is_null($memberWorkSheetId))
+      if (!is_null($memberspkey) && !is_null($memberWorkSheetId))
       {
         $previousMonth = date('m', strtotime('-1 month'));
         $year = date('Y', strtotime('-1 month'));
