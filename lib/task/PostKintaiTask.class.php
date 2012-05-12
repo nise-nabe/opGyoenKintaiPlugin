@@ -360,176 +360,172 @@ class PostKintaiTask extends sfBaseTask
             echo "skip\n";
             continue;
           }
-          else
+          foreach ($lineList->entries as $entry)
           {
-            foreach ($lineList->entries as $entry)
+            $lines = $entry->getCustom();
+            foreach ($lines as $line)
             {
-              $lines = $entry->getCustom();
-              foreach ($lines as $line)
+              $key = $line->getColumnName();
+              switch ($key)
               {
-                $key = $line->getColumnName();
-                switch ($key)
-                {
-                  case 'date':
-                    $date = $line->getText();
-                    break;
-                  case 'data':
-                    $data = $line->getText();
-                    break;
-                  case 'comment':
-                    $comment = $line->getText();
-                    break;
-                  default:
-                    // 何もしない。
-                }
+                case 'date':
+                  $date = $line->getText();
+                  break;
+                case 'data':
+                  $data = $line->getText();
+                  break;
+                case 'comment':
+                  $comment = $line->getText();
+                  break;
+                default:
+                  // 何もしない。
               }
             }
-            if (12 == strlen($data))
+          }
+          if (12 == strlen($data))
+          {
+            $keitai = substr($data, 0, 1);
+            if ('S' == $keitai)
             {
-              $keitai = substr($data, 0, 1);
-              if ('S' == $keitai)
+              $ssh = substr($data, 1, 2);
+              $ssm = substr($data, 3, 2);
+              $seh = substr($data, 5, 2);
+              $sem = substr($data, 7, 2);
+              $srest = substr($data, 9, 3);
+              $srh = floor($srest / 60);
+              $srm = $srest - ( $srh * 60 );
+              if (0 == $srh)
               {
-                $ssh = substr($data, 1, 2);
-                $ssm = substr($data, 3, 2);
-                $seh = substr($data, 5, 2);
-                $sem = substr($data, 7, 2);
-                $srest = substr($data, 9, 3);
-                $srh = floor($srest / 60);
-                $srm = $srest - ( $srh * 60 );
-                if (0 == $srh)
-                {
-                  $srh = '0';
-                }
-                if (0 == $srm)
-                {
-                  $srm = '0';
-                }
+                $srh = '0';
               }
-              else
+              if (0 == $srm)
               {
-                $zsh = substr($data, 1, 2);
-                $zsm = substr($data, 3, 2);
-                $zeh = substr($data, 5, 2);
-                $zem = substr($data, 7, 2);
-                $zrest = substr($data, 9, 3);
-                $zrh = floor($zrest / 60);
-                $zrm = $zrest - ( $zrh * 60 );
-                if (0 == $zrh)
-                {
-                  $zrh = '0';
-                }
-                if (0 == $zrm)
-                {
-                  $zrm = '0';
-                }
-              }
-            }
-            elseif (24 == strlen($data))
-            {
-              $data1 = substr($data, 0, 12);
-              $data2 = substr($data, 12, 12);
-              $keitai1 = substr($data1, 0, 1);
-              if ('S' == $keitai1)
-              {
-                $ssh = substr($data1, 1, 2);
-                $ssm = substr($data1, 3, 2);
-                $seh = substr($data1, 5, 2);
-                $sem = substr($data1, 7, 2);
-                $srest = substr($data1, 9, 3);
-                $srh = floor($srest / 60);
-                $srm = $srest - ( $srh * 60 );
-                if (0 == $srh)
-                {
-                  $srh = '0';
-                }
-                if (0 == $srm)
-                {
-                  $srm = '0';
-                }
-              }
-              else
-              {
-                $zsh = substr($data1, 1, 2);
-                $zsm = substr($data1, 3, 2);
-                $zeh = substr($data1, 5, 2);
-                $zem = substr($data1, 7, 2);
-                $zrest = substr($data1, 9, 3);
-                $zrh = floor($zrest / 60);
-                $zrm = $zrest - ( $zrh * 60 );
-                if (0 == $zrh)
-                {
-                  $zrh = '0';
-                }
-                if (0 == $zrm)
-                {
-                  $zrm = '0';
-                }
-              }
-              if ('S' == $keitai2)
-              {
-                $ssh = substr($data2, 1, 2);
-                $ssm = substr($data2, 3, 2);
-                $seh = substr($data2, 5, 2);
-                $sem = substr($data2, 7, 2);
-                $srest = substr($data2, 9, 3);
-                $srh = floor($srest / 60);
-                $srm = $srest - ( $srh * 60 );
-                if (0 == $srh)
-                {
-                  $srh = '0';
-                }
-                if (0 == $srm)
-                {
-                  $srm = '0';
-                }
-              }
-              else
-              {
-                $zsh = substr($data2, 1, 2);
-                $zsm = substr($data2, 3, 2);
-                $zeh = substr($data2, 5, 2);
-                $zem = substr($data2, 7, 2);
-                $zrest = substr($data2, 9, 3);
-                $zrh = floor($zrest / 60);
-                $zrm = $zrest - ( $zrh * 60 );
-                if (0 == $zrh)
-                {
-                  $zrh = '0';
-                }
-                if (0 == $zrm)
-                {
-                  $zrm = '0';
-                }
-              }
-            }
-            $detail = array("date"=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
-            // 変数を一括初期化。
-            list($date, $data, $data1, $data2, $keitai, $keitai1, $keitai2, $comment, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-
-            $x = new Zend_Gdata_Spreadsheets_ListQuery();
-            $x->setSpreadsheetKey($memberMasterSpkey);
-            $x->setWorksheetId($memberMasterWorkSheetId);
-            $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-            $x->setSpreadsheetQuery($query);
-            $lineList = $service->getListFeed($x);
-            if ($lineList)
-            {
-              $update = $service->updateRow($lineList->entries['0'], $detail);
-              if ($update)
-              {
-                echo sprintf("UPDATE SUCCESS! (OP3) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-              }
-              else
-              {
-                echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
+                $srm = '0';
               }
             }
             else
             {
-              echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
+              $zsh = substr($data, 1, 2);
+              $zsm = substr($data, 3, 2);
+              $zeh = substr($data, 5, 2);
+              $zem = substr($data, 7, 2);
+              $zrest = substr($data, 9, 3);
+              $zrh = floor($zrest / 60);
+              $zrm = $zrest - ( $zrh * 60 );
+              if (0 == $zrh)
+              {
+                $zrh = '0';
+              }
+              if (0 == $zrm)
+              {
+                $zrm = '0';
+              }
             }
           }
-          $detail = array();
+          elseif (24 == strlen($data))
+          {
+            $data1 = substr($data, 0, 12);
+            $data2 = substr($data, 12, 12);
+            $keitai1 = substr($data1, 0, 1);
+            if ('S' == $keitai1)
+            {
+              $ssh = substr($data1, 1, 2);
+              $ssm = substr($data1, 3, 2);
+              $seh = substr($data1, 5, 2);
+              $sem = substr($data1, 7, 2);
+              $srest = substr($data1, 9, 3);
+              $srh = floor($srest / 60);
+              $srm = $srest - ( $srh * 60 );
+              if (0 == $srh)
+              {
+                $srh = '0';
+              }
+              if (0 == $srm)
+              {
+                $srm = '0';
+              }
+            }
+            else
+            {
+              $zsh = substr($data1, 1, 2);
+              $zsm = substr($data1, 3, 2);
+              $zeh = substr($data1, 5, 2);
+              $zem = substr($data1, 7, 2);
+              $zrest = substr($data1, 9, 3);
+              $zrh = floor($zrest / 60);
+              $zrm = $zrest - ( $zrh * 60 );
+              if (0 == $zrh)
+              {
+                $zrh = '0';
+              }
+              if (0 == $zrm)
+              {
+                $zrm = '0';
+              }
+            }
+            if ('S' == $keitai2)
+            {
+              $ssh = substr($data2, 1, 2);
+              $ssm = substr($data2, 3, 2);
+              $seh = substr($data2, 5, 2);
+              $sem = substr($data2, 7, 2);
+              $srest = substr($data2, 9, 3);
+              $srh = floor($srest / 60);
+              $srm = $srest - ( $srh * 60 );
+              if (0 == $srh)
+              {
+                $srh = '0';
+              }
+              if (0 == $srm)
+              {
+                $srm = '0';
+              }
+            }
+            else
+            {
+              $zsh = substr($data2, 1, 2);
+              $zsm = substr($data2, 3, 2);
+              $zeh = substr($data2, 5, 2);
+              $zem = substr($data2, 7, 2);
+              $zrest = substr($data2, 9, 3);
+              $zrh = floor($zrest / 60);
+              $zrm = $zrest - ( $zrh * 60 );
+              if (0 == $zrh)
+              {
+                $zrh = '0';
+              }
+              if (0 == $zrm)
+              {
+                $zrm = '0';
+              }
+            }
+          }
+          $detail = array("date"=>$date, "ssh"=>$ssh, "ssm"=>$ssm, "seh"=>$seh, "sem"=>$sem, "srh"=>$srh, "srm"=>$srm, "zsh"=>$zsh, "zsm"=>$zsm, "zeh"=>$zeh, "zem"=>$zem, "zrh"=>$zrh, "zrm"=>$zrm);
+          // 変数を一括初期化。
+          list($date, $data, $data1, $data2, $keitai, $keitai1, $keitai2, $comment, $ssh, $ssm, $seh, $sem, $srh, $srm, $zsh, $zsm, $zeh, $zem, $zrh, $zrm) = array(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+          $x = new Zend_Gdata_Spreadsheets_ListQuery();
+          $x->setSpreadsheetKey($memberMasterSpkey);
+          $x->setWorksheetId($memberMasterWorkSheetId);
+          $query = 'date='.date('Y').'/'.date('m').'/'.$i;
+          $x->setSpreadsheetQuery($query);
+          $lineList = $service->getListFeed($x);
+          if ($lineList)
+          {
+            $update = $service->updateRow($lineList->entries['0'], $detail);
+            if ($update)
+            {
+              echo sprintf("UPDATE SUCCESS! (OP3) memberId: %s date: %s;\n", $memberId, $detail["date"]);
+            }
+            else
+            {
+              echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
+            }
+          }
+          else
+          {
+            echo sprintf("ERROR! NO UPDATED. (OP3) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
+          }
         }
       }
     }
