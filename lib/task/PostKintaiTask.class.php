@@ -65,45 +65,7 @@ class PostKintaiTask extends sfBaseTask
         // 先月分の勤怠を処理する。
         for ($i = 1; checkdate($previousMonth, $i, $year); $i++)
         {
-          $q = new Zend_Gdata_Spreadsheets_ListQuery();
-          $q->setSpreadsheetKey($memberspkey);
-          $q->setWorksheetId($memberWorkSheetId);
-          $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
-          $q->setSpreadsheetQuery($query);
-          $lineList = $service->getListFeed($q);
-          if (!$lineList)
-          {
-            continue;
-          }
-          $entry = $lineList->entries[0];
-          $detail = array();
-          foreach (array('date', 'ssh', 'ssm', 'seh', 'sem', 'srh', 'srm', 'zsh', 'zsm', 'zeh', 'zem', 'zrh', 'zrm') as $columnName)
-          {
-            $detail[$columnName] = $entry->getCustomByName($columnName)->getText();
-          }
-
-          $r = new Zend_Gdata_Spreadsheets_ListQuery();
-          $r->setSpreadsheetKey($memberMasterSpkey);
-          $r->setWorksheetId($memberMasterWorkSheetId);
-          $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
-          $r->setSpreadsheetQuery($query);
-          $lineList = $service->getListFeed($r);
-          if ($lineList)
-          {
-            $update = $service->updateRow($lineList->entries['0'], $detail);
-            if ($update)
-            {
-              echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-            }
-            else
-            {
-              echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-            }
-          }
-          else
-          {
-            echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-          }
+          $this->updateKintai($service, $memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $previousMonth, $i);
         }
 
         // 今月分の勤怠を処理する。
@@ -342,11 +304,7 @@ class PostKintaiTask extends sfBaseTask
         $today = date('d');
         for ($i = 1; $i < $today && checkdate(date('m'), $i, date('Y')); $i++)
         {
-          $j = $i;
-          if (1 == strlen($j))
-          {
-            $j = '0'.$j;
-          }
+          $j = sprintf('%20d', $i);
           echo "Scanning: ".$year."/".date('m')."/".$j."... ";
 
           $w = new Zend_Gdata_Spreadsheets_ListQuery();
@@ -664,5 +622,48 @@ class PostKintaiTask extends sfBaseTask
     $diffday = $diff / ( 3600 * 24 );
 
     return $diffday;
+  }
+
+  private function updateKintai($service, $memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $previousMonth, $i)
+  {
+    $q = new Zend_Gdata_Spreadsheets_ListQuery();
+    $q->setSpreadsheetKey($memberspkey);
+    $q->setWorksheetId($memberWorkSheetId);
+    $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+    $q->setSpreadsheetQuery($query);
+    $lineList = $service->getListFeed($q);
+    if (!$lineList)
+    {
+      continue;
+    }
+    $entry = $lineList->entries[0];
+    $detail = array();
+    foreach (array('date', 'ssh', 'ssm', 'seh', 'sem', 'srh', 'srm', 'zsh', 'zsm', 'zeh', 'zem', 'zrh', 'zrm') as $columnName)
+    {
+      $detail[$columnName] = $entry->getCustomByName($columnName)->getText();
+    }
+
+    $r = new Zend_Gdata_Spreadsheets_ListQuery();
+    $r->setSpreadsheetKey($memberMasterSpkey);
+    $r->setWorksheetId($memberMasterWorkSheetId);
+    $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+    $r->setSpreadsheetQuery($query);
+    $lineList = $service->getListFeed($r);
+    if ($lineList)
+    {
+      $update = $service->updateRow($lineList->entries['0'], $detail);
+      if ($update)
+      {
+        echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
+      }
+      else
+      {
+        echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
+      }
+    }
+    else
+    {
+      echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
+    }
   }
 }
