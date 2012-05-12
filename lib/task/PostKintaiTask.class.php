@@ -71,44 +71,7 @@ class PostKintaiTask extends sfBaseTask
         // 今月分の勤怠を処理する。
         for ($i = 1; $i < $today && checkdate(date('m'), $i, date('Y')); $i++)
         {
-          $s = new Zend_Gdata_Spreadsheets_ListQuery();
-          $s->setSpreadsheetKey($memberspkey);
-          $s->setWorksheetId($memberWorkSheetId);
-          $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-          $s->setSpreadsheetQuery($query);
-          $lineList = $service->getListFeed($s);
-          if (!$lineList)
-          {
-            continue;
-          }
-          $entry = $lineList->entries[0];
-          $detail = array();
-          foreach (array('date', 'ssh', 'ssm', 'seh', 'sem', 'srh', 'srm', 'zsh', 'zsm', 'zeh', 'zem', 'zrh', 'zrm') as $columnName)
-          {
-            $detail[$columnName] = $entry->getCustomByName($columnName)->getText();
-          }
-          $t = new Zend_Gdata_Spreadsheets_ListQuery();
-          $t->setSpreadsheetKey($memberMasterSpkey);
-          $t->setWorksheetId($memberMasterWorkSheetId);
-          $query = 'date='.date('Y').'/'.date('m').'/'.$i;
-          $t->setSpreadsheetQuery($query);
-          $lineList2 = $service->getListFeed($t);
-          if ($lineList2)
-          {
-            $update = $service->updateRow($lineList2->entries['0'], $detail);
-            if ($update)
-            {
-              echo sprintf("UPDATE SUCCESS!(SpreadSheet) memberId: %s date: %s;\n", $memberId, $detail["date"]);
-            }
-            else
-            {
-              echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Internal Server Error Occured on Google Service. memberId: %s date: %s;", $memberId, $detail["date"]);
-            }
-          }
-          else
-          {
-            echo sprintf("ERROR! NO UPDATED.(SpreadSheet) Maybe Spreadsheet has been broken. memberId: %s date %s;", $memberId, $detail["date"]);
-          }
+          $this->updateKintai($service, $memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId, date('Y'), date('m'), $i);
         }
       }
       elseif (!is_null($memberMasterSpkey) && !is_null($memberMasterWorkSheetId))
@@ -624,12 +587,12 @@ class PostKintaiTask extends sfBaseTask
     return $diffday;
   }
 
-  private function updateKintai($service, $memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $previousMonth, $i)
+  private function updateKintai($service, $memberId, $memberspkey, $memberWorkSheetId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $month, $i)
   {
     $q = new Zend_Gdata_Spreadsheets_ListQuery();
     $q->setSpreadsheetKey($memberspkey);
     $q->setWorksheetId($memberWorkSheetId);
-    $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+    $query = 'date='.$year.'/'.$month.'/'.$i;
     $q->setSpreadsheetQuery($query);
     $lineList = $service->getListFeed($q);
     if (!$lineList)
@@ -643,10 +606,15 @@ class PostKintaiTask extends sfBaseTask
       $detail[$columnName] = $entry->getCustomByName($columnName)->getText();
     }
 
+    $this->updateMasterKintai($service, $memberId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $month, $i, $detail);
+  }
+
+  private function updateMasterKintai($service, $memberId, $memberMasterSpkey, $memberMasterWorkSheetId, $year, $month, $i, $detail)
+  {
     $r = new Zend_Gdata_Spreadsheets_ListQuery();
     $r->setSpreadsheetKey($memberMasterSpkey);
     $r->setWorksheetId($memberMasterWorkSheetId);
-    $query = 'date='.$year.'/'.$previousMonth.'/'.$i;
+    $query = 'date='.$year.'/'.$month.'/'.$i;
     $r->setSpreadsheetQuery($query);
     $lineList = $service->getListFeed($r);
     if ($lineList)
